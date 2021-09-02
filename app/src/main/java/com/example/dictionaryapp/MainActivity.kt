@@ -24,23 +24,21 @@ class MainActivity : AppCompatActivity() {
 
         val queue = Volley.newRequestQueue(this)
 
-        val url = getURL()
+
         binding.findButton.setOnClickListener{
 
-            val stringRequest = StringRequest(Request.Method.GET, url,
+            val stringRequest = StringRequest(Request.Method.GET, getURL(),
                 Response.Listener { response ->
                     try{
                         extractDefinitionFromJSON(response)
                     }catch(exception : Exception){
                         exception.printStackTrace()
                     }
-
-
                 },
                Response.ErrorListener { error ->
                    Toast.makeText(this, error.message, Toast.LENGTH_LONG).show()
                 }
-                )
+            )
 
             queue.add(stringRequest)
 
@@ -50,9 +48,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun getURL() : String{
 
-        val word = binding.wordEditText.text
-        val apiKey = "7c06a379-53d7-476c-9c80-4b509bb5323e"
-        val url = "https://www.dictionaryapi.com/api/v3/references/learners/json/$word?key=$apiKey"
+        val word = binding.wordEditText.text.toString()
+        //val apiKey = "73bb94b8-b60d-4613-ad0a-fa7884fe27ef"
+        //val url = "https://www.dictionaryapi.com/api/v3/references/learners/json/$word?key=$apiKey"
+        val url = "https://api.dictionaryapi.dev/api/v2/entries/en/$word"
+
+
 
         return url
     }
@@ -61,15 +62,18 @@ class MainActivity : AppCompatActivity() {
     private fun extractDefinitionFromJSON(response: String): String{
 
         val jsonArray = JSONArray(response)
-        val firstIndexOfJsonArrayValue = jsonArray.getJSONObject(0)
-        val getshortDef = firstIndexOfJsonArrayValue.getJSONArray("shortdef")
-        val getFirstItemInShortDef = getshortDef.get(0).toString()
+        val firstIndexOfJsonArray = jsonArray.getJSONObject(0)
+        val meanings = firstIndexOfJsonArray.getJSONArray("meanings")
+        val firstObjectInMeaningsArray = meanings.getJSONObject(0)
+        val definition = firstObjectInMeaningsArray.getJSONArray("definitions").getJSONObject(0).getString("definition")
+
+
 
         val intent = Intent(this, DefinitionActivity::class.java)
-        intent.putExtra(KEY, getFirstItemInShortDef)
+        intent.putExtra(KEY, definition)
         startActivity(intent)
 
-        return getFirstItemInShortDef
+        return definition
 
     }
 

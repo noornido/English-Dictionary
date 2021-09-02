@@ -19,8 +19,9 @@
         android:hint="@string/edit_text_string"
         android:importantForAutofill="no"
         android:inputType="text"
+        android:minHeight="48dp"
         android:padding="@dimen/margin_eight"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/find_button"
