@@ -34,9 +34,11 @@ class MainActivity : AppCompatActivity() {
                     }catch(exception : Exception){
                         exception.printStackTrace()
                     }
+
+
                 },
-               Response.ErrorListener { error ->
-                   Toast.makeText(this, error.message, Toast.LENGTH_LONG).show()
+                Response.ErrorListener { error ->
+                    Toast.makeText(this, error.message, Toast.LENGTH_LONG).show()
                 }
             )
 
@@ -47,36 +49,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getURL() : String{
-
-        val word = binding.wordEditText.text.toString()
-        //val apiKey = "73bb94b8-b60d-4613-ad0a-fa7884fe27ef"
-        //val url = "https://www.dictionaryapi.com/api/v3/references/learners/json/$word?key=$apiKey"
-        val url = "https://api.dictionaryapi.dev/api/v2/entries/en/$word"
-
-
+        val word = binding.wordEditText.text
+        val apiKey = "73bb94b8-b60d-4613-ad0a-fa7884fe27ef"
+        val url = "https://www.dictionaryapi.com/api/v3/references/learners/json/$word?key=$apiKey"
 
         return url
     }
 
 
-    private fun extractDefinitionFromJSON(response: String): String{
+    private fun extractDefinitionFromJSON(response: String){
 
         val jsonArray = JSONArray(response)
-        val firstIndexOfJsonArray = jsonArray.getJSONObject(0)
-        val meanings = firstIndexOfJsonArray.getJSONArray("meanings")
-        val firstObjectInMeaningsArray = meanings.getJSONObject(0)
-        val definition = firstObjectInMeaningsArray.getJSONArray("definitions").getJSONObject(0).getString("definition")
+        val firstIndexOfJsonArrayValue = jsonArray.getJSONObject(0)
+        val getshortDef = firstIndexOfJsonArrayValue.getJSONArray("shortdef")
+        val getFirstItemInShortDef = getshortDef.get(0).toString()
 
 
 
         val intent = Intent(this, DefinitionActivity::class.java)
-        intent.putExtra(KEY, definition)
+        intent.putExtra(KEY, getFirstItemInShortDef)
         startActivity(intent)
 
-        return definition
 
     }
 
 
 }
-
